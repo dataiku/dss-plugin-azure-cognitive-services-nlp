@@ -1,0 +1,28 @@
+{
+    "meta": {
+        "label": "Azure connection",
+        "pluralLabel": "Azure connections",
+        "description": "Azure connection settings",
+        "icon": "icon-link"
+    },
+    "defaultDefinableAtProjectLevel": true,
+    "defaultDefinableInline": true,
+    "pluginParams": [
+    ],
+    "params": [
+        {
+            "name": "api_key",
+            "label": "Azure API Key",
+            "type": "STRING",
+            "mandatory": true
+        },
+        {
+            "name": "azure_location",
+            "label": "Azure Location",
+            "type": "STRING",
+            "defaultValue": "westeurope",
+            "description": "Corresponding to your API Key (ex: 'westeurope', 'eastus2')",
+            "mandatory": true
+        }
+    ]
+}
