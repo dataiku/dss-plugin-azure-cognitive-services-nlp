@@ -13,7 +13,7 @@
         {
             "name": "api_key",
             "label": "Azure API Key",
-            "type": "STRING",
+            "type": "PASSWORD",
             "mandatory": true
         },
         {

@@ -1,6 +1,6 @@
 import requests
 
-class NLPClient(object):
+class get_client(object):
     def __init__(self, connection_info):
         if connection_info is None:
             raise ValueError("No Azure credentials provided")
@@ -31,3 +31,34 @@ class NLPClient(object):
         if r.text == '':
             raise Exception("Empty answer from Azure Cognitive Services (HTTP code: " + str(r.status_code) + ")")
         return r.json()
+
+
+def format_language(languages, output_format):
+    if len(languages) == 0:
+        return ''
+    s = sorted(languages, key= lambda l: l['score'], reverse=True)
+    if output_format == 'iso':
+        return s[0]['iso6391Name']
+    else:
+        return s[0]['name']
+
+def format_sentiment(score, scale):
+    if scale == 'binary':
+        return 'negative' if score < 0.5 else 'positive'
+    elif scale == 'ternary':
+        return 'negative' if score < 0.33 else 'positive' if score > 0.66 else 'neutral'
+    elif scale == '1to5':
+        if score < 0.1:
+            return 'highly negative'
+        elif score < 0.33:
+            return 'negative'
+        elif score < 0.66:
+            return 'neutral'
+        elif score < 0.9:
+            return 'positive'
+        else:
+            return 'highly positive'
+    elif scale == 'continuous':
+        return score
+    else:
+        raise ValueError("Invalid sentiment scale")

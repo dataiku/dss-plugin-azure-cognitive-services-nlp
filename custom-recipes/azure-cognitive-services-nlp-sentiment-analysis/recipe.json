@@ -1,8 +1,8 @@
 {
     "meta": {
-        "label": "Key Phrase Extraction",
-        "description": "Detect key phrases (typically one to four words each) in texts to easily identify the main points",
-        "icon": "icon-lightbulb",
+        "label": "Sentiment Analysis",
+        "description": "Estimate the sentiment polarity of a text (positive, negative, neutral)",
+        "icon": "icon-star-half-full",
         "iconColor": "blue"
     },
     "kind": "PYTHON",
@@ -49,6 +49,36 @@
             "columnRole": "input-dataset",
             "description":"Optional. Name of the column storing the language in ISO 639-1 format",
             "mandatory": false
+        },
+        {
+            "name": "sentiment-scale",
+            "label": "Sentiment scale",
+            "type": "SELECT",
+            "mandatory": true,
+            "selectChoices": [
+                {
+                    "value": "binary",
+                    "label": "negative / positive"
+                },
+                {
+                    "value": "ternary",
+                    "label": "negative / neutral / positive"
+                },
+                {
+                    "value": "1to5",
+                    "label": "highly negative / negative / neutral / positive / highly positive"
+                },
+                {
+                    "value": "continuous",
+                    "label": "Number between 0 (highly negative) and 1 (highly positive)"
+                }
+            ],
+            "defaultValue": "ternary"
+        },
+        {
+            "name": "should_output_raw_results",
+            "label": "Output Raw Response?",
+            "type": "BOOLEAN"
         }
     ]
 }
