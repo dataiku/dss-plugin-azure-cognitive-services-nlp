@@ -32,6 +32,24 @@ class get_client(object):
             raise Exception("Empty answer from Azure Cognitive Services (HTTP code: " + str(r.status_code) + ")")
         return r.json()
 
+def format_keyphrases_results(raw_results):
+    output_row = dict()
+    output_row["raw_results"] = raw_results
+    output_row["keyphrases"] = _distinct(raw_results.get('keyPhrases', []))
+    return output_row
+
+
+def format_entities_results(raw_results):
+    output_row = dict()
+    output_row["raw_results"] = raw_results
+    output_row["entities"] = raw_results.get('entities', [])
+    return output_row
+
+def format_language_results(raw_results, output_format):
+    output_row = dict()
+    output_row["raw_results"] = raw_results
+    output_row["detected_language"] = format_language(raw_results.get('detectedLanguages'), output_format)
+    return output_row
 
 def format_language(languages, output_format):
     if len(languages) == 0:
@@ -41,6 +59,12 @@ def format_language(languages, output_format):
         return s[0]['iso6391Name']
     else:
         return s[0]['name']
+
+def format_sentiment_results(raw_results, scale):
+    output_row = dict()
+    output_row["raw_results"] = raw_results
+    output_row["predicted_sentiment"] = format_sentiment(raw_results.get('score'), scale)
+    return output_row
 
 def format_sentiment(score, scale):
     if scale == 'binary':
@@ -58,7 +82,8 @@ def format_sentiment(score, scale):
             return 'positive'
         else:
             return 'highly positive'
-    elif scale == 'continuous':
-        return score
     else:
-        raise ValueError("Invalid sentiment scale")
+        return score
+
+def _distinct(l):
+    return list(dict.fromkeys(l))

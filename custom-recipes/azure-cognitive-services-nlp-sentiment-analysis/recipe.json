@@ -6,10 +6,10 @@
         "iconColor": "blue"
     },
     "kind": "PYTHON",
-    "selectableFromDataset": "input-dataset",
+    "selectableFromDataset": "input_dataset",
     "inputRoles": [
         {
-            "name": "input-dataset",
+            "name": "input_dataset",
             "label": "Input Dataset",
             "description": "Dataset containing the data to analyze",
             "arity": "UNARY",
@@ -19,7 +19,7 @@
     ],
     "outputRoles": [
         {
-            "name": "output-dataset",
+            "name": "output_dataset",
             "label": "Output Dataset",
             "description": "Dataset containing the enriched data from the Azure API",
             "arity": "UNARY",
@@ -36,22 +36,21 @@
             "mandatory" : true
         },
         {
-            "name": "text-column",
+            "name": "text_column",
             "label": "Text Column",
             "type": "COLUMN",
-            "columnRole": "input-dataset",
+            "columnRole": "input_dataset",
             "mandatory": true
         },
         {
-            "name": "language-column",
-            "label": "Language Column",
-            "type": "COLUMN",
-            "columnRole": "input-dataset",
-            "description":"Optional. Name of the column storing the language in ISO 639-1 format",
+            "name": "language",
+            "label": "Language",
+            "type": "STRING",
+            "description":"in ISO 639-1 format",
             "mandatory": false
         },
         {
-            "name": "sentiment-scale",
+            "name": "sentiment_scale",
             "label": "Sentiment scale",
             "type": "SELECT",
             "mandatory": true,
