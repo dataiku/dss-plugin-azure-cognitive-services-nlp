@@ -1,9 +1,8 @@
 {
     "meta": {
-        "label": "Named Entities Recognition",
-        "description": "Identify “real-world objects” (i.e. People names, Dates, Places, etc) in texts",
-        "icon": "icon-tags",
-        "iconColor": "blue"
+        "label": "Named Entity Recognition",
+        "description": "Recognize “real-world objects” (people names, dates, places, etc.) in a text",
+        "icon": "icon-DKU_azure-cognitive-services icon-cloud"
     },
     "kind": "PYTHON",
     "selectableFromDataset": "input_dataset",

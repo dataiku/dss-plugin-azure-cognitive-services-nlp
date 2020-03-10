@@ -1,6 +1,6 @@
 # Microsoft Azure Cognitive Services - NLP
 
-This Dataiku DSS plugin provides several tools to interact with the Natural Language API from [Microsoft Azure Cognitive Services API](https://azure.microsoft.com/en-us/services/cognitive-services/).
+This Dataiku DSS plugin provides several recipes to call [Microsoft Azure Cognitive Services Text Analytics APIs](https://docs.microsoft.com/en-gb/azure/cognitive-services/text-analytics/).
 
 Documentation: https://www.dataiku.com/dss/plugins/info/azure-cognitive-services-nlp.html
 

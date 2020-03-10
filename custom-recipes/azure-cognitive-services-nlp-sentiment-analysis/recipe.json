@@ -1,9 +1,8 @@
 {
     "meta": {
         "label": "Sentiment Analysis",
-        "description": "Estimate the sentiment polarity of a text (positive, negative, neutral)",
-        "icon": "icon-star-half-full",
-        "iconColor": "blue"
+        "description": "Analyze the sentiment polarity (positive, negative, neutral) of a text",
+        "icon": "icon-DKU_azure-cognitive-services icon-cloud"
     },
     "kind": "PYTHON",
     "selectableFromDataset": "input_dataset",
