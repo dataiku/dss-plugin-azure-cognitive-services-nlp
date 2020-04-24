@@ -5,7 +5,7 @@
     },
     "defaultDefinableAtProjectLevel": true,
     "defaultDefinableInline": false,
-        "params": [
+    "params": [
         {
             "name": "separator_authentication",
             "label": "Authentication",
@@ -15,14 +15,16 @@
         {
             "name": "azure_api_key",
             "label": "Azure API Key",
+            "description": "If empty, attempts to ascertain key from the environment.",
             "type": "PASSWORD",
-            "mandatory": true
+            "mandatory": false
         },
         {
             "name": "azure_region",
             "label": "Azure region",
+            "description": "If empty, attempts to ascertain endpoint from the environment.",
             "type": "STRING",
-            "mandatory": true
+            "mandatory": false
         },
         {
             "name": "separator_api_quota",
@@ -35,7 +37,7 @@
             "description": "Maximum number of requests per period for a given DSS activity",
             "type": "INT",
             "mandatory": true,
-            "defaultValue": 1000,
+            "defaultValue": 100,
             "minI": 1
         },
         {
@@ -44,7 +46,7 @@
             "description": "Reset period of the quota in seconds",
             "type": "INT",
             "mandatory": true,
-            "defaultValue": 10,
+            "defaultValue": 30,
             "minI": 1
         },
         {

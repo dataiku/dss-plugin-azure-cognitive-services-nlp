@@ -8,7 +8,11 @@
         "icon": "icon-azure-cognitive-services icon-cloud",
         "licenseInfo": "Apache Software License",
         "url": "https://www.dataiku.com/dss/plugins/info/azure-cognitive-services-nlp.html",
-        "tags": ["Microsoft Azure", "Cloud", "NLP"],
+        "tags": [
+            "Microsoft Azure",
+            "Cloud",
+            "NLP"
+        ],
         "supportLevel": "TIER2_SUPPORT"
     }
 }

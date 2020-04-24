@@ -1,9 +1,12 @@
 # -*- coding: utf-8 -*-
 import logging
+import os
 from typing import AnyStr, Dict
 from enum import Enum
 
 from azure.ai.textanalytics import TextAnalyticsClient
+from azure.core.credentials import AzureKeyCredential
+from azure.core.exceptions import AzureError
 
 from plugin_io_utils import (
     generate_unique, safe_json_loads, ErrorHandlingEnum, OutputFormatEnum)
@@ -13,7 +16,7 @@ from plugin_io_utils import (
 # CONSTANT DEFINITION
 # ==============================================================================
 
-API_EXCEPTIONS = ()
+API_EXCEPTIONS = (AzureError, TypeError, ValueError)
 
 API_SUPPORT_BATCH = True
 BATCH_RESULT_KEY = ""
@@ -34,8 +37,19 @@ class EntityTypesEnum(Enum):
 # ==============================================================================
 
 
-def get_client(api_configuration_preset, service_name: AnyStr):
-
+def get_client(api_configuration_preset):
+    api_key = api_configuration_preset.get("azure_api_key", "")
+    if str(api_key) == "":
+        api_key = os.environ["AZURE_TEXT_ANALYTICS_KEY"]
+    credential = AzureKeyCredential(api_key)
+    region = api_configuration_preset.get("azure_region", "")
+    endpoint = "https:/{}.api.cognitive.microsoft.com/".format(region)
+    if str(region) == "":
+        endpoint = os.environ["AZURE_TEXT_ANALYTICS_ENDPOINT"]
+    text_analytics_client = TextAnalyticsClient(
+        endpoint=endpoint, credential=credential)
+    logging.info("Credentials loaded")
+    return text_analytics_client
 
 
 def format_language_detection(
