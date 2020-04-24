@@ -4,7 +4,7 @@
     "meta": {
         "label": "Azure Cognitive Services Text Analytics NLP",
         "description": "Use Microsoft Azure Cognitive Services Text Analytics APIs to perform Language Detection, Sentiment Analysis, Named & Linked Entity Recognition and Key Phrase Extraction",
-        "author": "Dataiku (Joachim ZENTICI and Alex COMBESSIE)",
+        "author": "Dataiku (Alex COMBESSIE and Joachim ZENTICI)",
         "icon": "icon-azure-cognitive-services icon-cloud",
         "licenseInfo": "Apache Software License",
         "url": "https://www.dataiku.com/dss/plugins/info/azure-cognitive-services-nlp.html",
