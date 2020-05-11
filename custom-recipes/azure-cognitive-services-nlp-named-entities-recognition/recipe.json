@@ -2,7 +2,8 @@
     "meta": {
         "label": "Named Entity Recognition",
         "description": "Recognize “real-world objects” (people names, dates, places, etc.) in a text",
-        "icon": "icon-azure-cognitive-services icon-cloud"
+        "icon": "icon-azure-cognitive-services icon-cloud",
+        "displayOrderRank": 3
     },
     "kind": "PYTHON",
     "selectableFromDataset": "input_dataset",
@@ -45,6 +46,7 @@
         {
             "name": "language",
             "label": "Language",
+            "description": "List of supported languages",
             "type": "SELECT",
             "mandatory": true,
             "selectChoices": [
@@ -115,28 +117,6 @@
             "visibilityCondition": "model.language == 'language_column'"
         },
         {
-            "name": "separator_output",
-            "label": "Output Parameters",
-            "type": "SEPARATOR"
-        },
-        {
-            "name": "output_format",
-            "label": "Format",
-            "type": "SELECT",
-            "mandatory": true,
-            "selectChoices": [
-                {
-                    "value": "SINGLE_COLUMN",
-                    "label": "Single JSON column"
-                },
-                {
-                    "value": "MULTIPLE_COLUMNS",
-                    "label": "Multiple columns by entity type"
-                }
-            ],
-            "defaultValue": "MULTIPLE_COLUMNS"
-        },
-        {
             "name": "separator_configuration",
             "label": "Configuration",
             "type": "SEPARATOR"
@@ -149,9 +129,85 @@
             "mandatory": true
         },
         {
+            "name": "separator_advanced",
+            "label": "Advanced",
+            "type": "SEPARATOR"
+        },
+        {
+            "name": "expert",
+            "label": "Expert mode",
+            "type": "BOOLEAN",
+            "defaultValue": false
+        },
+        {
+            "name": "entity_types",
+            "label": "Entity types",
+            "type": "MULTISELECT",
+            "visibilityCondition": "model.expert == true",
+            "description": "List of entity types to extract",
+            "mandatory": true,
+            "selectChoices": [
+                {
+                    "value": "COMMERCIAL_ITEM",
+                    "label": "Commercial item"
+                },
+                {
+                    "value": "DATE",
+                    "label": "Date"
+                },
+                {
+                    "value": "EVENT",
+                    "label": "Event"
+                },
+                {
+                    "value": "LOCATION",
+                    "label": "Location"
+                },
+                {
+                    "value": "ORGANIZATION",
+                    "label": "Organization"
+                },
+                {
+                    "value": "OTHER",
+                    "label": "Other"
+                },
+                {
+                    "value": "PERSON",
+                    "label": "Person"
+                },
+                {
+                    "value": "QUANTITY",
+                    "label": "Quantity"
+                },
+                {
+                    "value": "TITLE",
+                    "label": "Title"
+                }
+            ],
+            "defaultValue": [
+                "COMMERCIAL_ITEM",
+                "EVENT",
+                "LOCATION",
+                "ORGANIZATION",
+                "PERSON"
+            ]
+        },
+        {
+            "name": "minimum_score",
+            "label": "Minimum score",
+            "description": "Minimum confidence score (from 0 to 1) for the entity to be recognized as relevant",
+            "visibilityCondition": "model.expert == true",
+            "type": "DOUBLE",
+            "mandatory": true,
+            "defaultValue": 0,
+            "minD": 0,
+            "maxD": 1
+        },
+        {
             "name": "error_handling",
             "label": "API error handling",
             "type": "SELECT",
+            "visibilityCondition": "model.expert == true",
             "selectChoices": [
                 {
                     "value": "FAIL",
@@ -164,7 +220,7 @@
             ],
             "defaultValue": "LOG",
             "mandatory": true,
-            "description": "Log API errors to the output or fail with an exception"
+            "description": "Log API errors to the output or fail with an exception on any API error"
         }
     ],
     "resourceKeys": []

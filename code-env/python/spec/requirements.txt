@@ -1,5 +1,5 @@
 azure-ai-textanalytics==1.0.0b4
-tqdm==4.45.0
+tqdm==4.46.0
 ratelimit==2.2.1
 retry==0.9.2
 more_itertools==8.2.0
