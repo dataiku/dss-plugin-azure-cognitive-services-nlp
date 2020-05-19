@@ -207,17 +207,17 @@ class NamedEntityRecognitionAPIFormatter(GenericAPIFormatter):
     def format_row(self, row: Dict) -> Dict:
         raw_response = row[self.api_column_names.response]
         response = safe_json_loads(raw_response, self.error_handling)
-        entities = response.get("Entities", [])
+        entities = response.get("entities", [])
         selected_entity_types = sorted([e.name for e in self.entity_types])
         for n in selected_entity_types:
             entity_type_column = generate_unique(
                 "entity_type_" + n.lower(), row.keys(), self.column_prefix
             )
             row[entity_type_column] = [
-                e.get("Text")
+                e.get("text")
                 for e in entities
-                if e.get("Type", "") == n
-                and float(e.get("Score", 0)) >= self.minimum_score
+                if e.get("type", "") == n
+                and float(e.get("score", 0)) >= self.minimum_score
             ]
             if len(row[entity_type_column]) == 0:
                 row[entity_type_column] = ""
