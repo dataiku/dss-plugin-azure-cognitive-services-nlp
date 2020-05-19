@@ -55,20 +55,20 @@
                     "label": "Detected language column"
                 },
                 {
-                    "value": "ar",
-                    "label": "Arabic"
+                    "value": "da",
+                    "label": "Danish"
                 },
                 {
-                    "value": "zh",
-                    "label": "Chinese (Simplified)"
-                },
-                {
-                    "value": "zh-TW",
-                    "label": "Chinese (Traditional)"
+                    "value": "nl",
+                    "label": "Dutch"
                 },
                 {
                     "value": "en",
                     "label": "English"
+                },
+                {
+                    "value": "fi",
+                    "label": "Finnish"
                 },
                 {
                     "value": "fr",
@@ -77,10 +77,6 @@
                 {
                     "value": "de",
                     "label": "German"
-                },
-                {
-                    "value": "hi",
-                    "label": "Hindi"
                 },
                 {
                     "value": "it",
@@ -95,12 +91,28 @@
                     "label": "Korean"
                 },
                 {
+                    "value": "no",
+                    "label": "Norwegian"
+                },
+                {
+                    "value": "pl",
+                    "label": "Polish"
+                },
+                {
                     "value": "pt",
                     "label": "Portuguese"
                 },
                 {
+                    "value": "ru",
+                    "label": "Russian"
+                },
+                {
                     "value": "es",
                     "label": "Spanish"
+                },
+                {
+                    "value": "sv",
+                    "label": "Swedish"
                 }
             ],
             "defaultValue": "en"
@@ -152,7 +164,7 @@
         },
         {
             "name": "error_handling",
-            "label": "API error handling",
+            "label": "Error handling",
             "type": "SELECT",
             "visibilityCondition": "model.expert == true",
             "selectChoices": [

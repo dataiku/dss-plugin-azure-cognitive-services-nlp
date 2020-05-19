@@ -6,19 +6,29 @@ from retry import retry
 from ratelimit import limits, RateLimitException
 
 import dataiku
+from dataiku.customrecipe import (
+    get_recipe_config,
+    get_input_names_for_role,
+    get_output_names_for_role,
+)
 
 from plugin_io_utils import (
     ErrorHandlingEnum,
     validate_column_input,
     set_column_description,
 )
-from api_parallelizer import api_parallelizer
-from dataiku.customrecipe import (
-    get_recipe_config,
-    get_input_names_for_role,
-    get_output_names_for_role,
+from azure_nlp_api_client import (
+    API_EXCEPTIONS,
+    API_SUPPORT_BATCH,
+    BATCH_RESULT_KEY,
+    BATCH_ERROR_KEY,
+    BATCH_INDEX_KEY,
+    BATCH_ERROR_MESSAGE_KEY,
+    BATCH_ERROR_TYPE_KEY,
+    get_client,
 )
-from dku_azure_text_analytics import get_client, GenericAPIFormatter
+from api_parallelizer import api_parallelizer
+from azure_nlp_api_formatting import LanguageDetectionAPIFormatter
 
 
 # ==============================================================================
@@ -31,6 +41,7 @@ api_quota_period = api_configuration_preset.get("api_quota_period")
 parallel_workers = api_configuration_preset.get("parallel_workers")
 batch_size = api_configuration_preset.get("batch_size")
 text_column = get_recipe_config().get("text_column")
+country_hint = get_recipe_config().get("country_hint", "")
 error_handling = ErrorHandlingEnum[get_recipe_config().get("error_handling")]
 
 input_dataset_name = get_input_names_for_role("input_dataset")[0]
@@ -44,8 +55,17 @@ output_dataset = dataiku.Dataset(output_dataset_name)
 validate_column_input(text_column, input_columns_names)
 input_df = input_dataset.get_dataframe()
 client = get_client(api_configuration_preset)
-api_support_batch = True
 column_prefix = "lang_detect_api"
+
+batch_kwargs = {
+    "api_support_batch": API_SUPPORT_BATCH,
+    "batch_size": batch_size,
+    "batch_result_key": BATCH_RESULT_KEY,
+    "batch_error_key": BATCH_ERROR_KEY,
+    "batch_index_key": BATCH_INDEX_KEY,
+    "batch_error_message_key": BATCH_ERROR_MESSAGE_KEY,
+    "batch_error_type_key": BATCH_ERROR_TYPE_KEY,
+}
 
 
 # ==============================================================================
@@ -56,29 +76,32 @@ column_prefix = "lang_detect_api"
 @retry((RateLimitException, OSError), delay=api_quota_period, tries=5)
 @limits(calls=api_quota_rate_limit, period=api_quota_period)
 def call_api_language_detection(batch: List[Dict], text_column: AnyStr) -> List[Dict]:
-    response_list = []
-    document_list = [str(r.get(text_column, "")).strip() for r in batch]
-
-    def callback(response):
-        print(json.dumps(response.raw_response))
-        response_list.append(response.raw_response)
-
-    client.detect_language(document_list, raw_response_hook=callback)
-    return response_list
+    document_list = {
+        "documents": [
+            {
+                "id": str(index),
+                "text": str(row.get(text_column, "")).strip(),
+                "countryHint": country_hint,
+            }
+            for index, row in enumerate(batch)
+        ]
+    }
+    responses = client.detect_language(document_list)
+    return responses
 
 
 df = api_parallelizer(
     input_df=input_df,
     api_call_function=call_api_language_detection,
+    api_exceptions=API_EXCEPTIONS,
+    column_prefix=column_prefix,
     text_column=text_column,
     parallel_workers=parallel_workers,
-    api_support_batch=api_support_batch,
-    batch_size=batch_size,
     error_handling=error_handling,
-    column_prefix=column_prefix,
+    **batch_kwargs
 )
 
-api_formatter = GenericAPIFormatter(
+api_formatter = LanguageDetectionAPIFormatter(
     input_df=input_df, column_prefix=column_prefix, error_handling=error_handling,
 )
 output_df = api_formatter.format_df(df)

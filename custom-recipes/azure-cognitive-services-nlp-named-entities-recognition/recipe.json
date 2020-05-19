@@ -59,16 +59,28 @@
                     "label": "Arabic"
                 },
                 {
+                    "value": "cs",
+                    "label": "Czech"
+                },
+                {
                     "value": "zh",
                     "label": "Chinese (Simplified)"
                 },
                 {
-                    "value": "zh-TW",
-                    "label": "Chinese (Traditional)"
+                    "value": "da",
+                    "label": "Danish"
+                },
+                {
+                    "value": "nl",
+                    "label": "Dutch"
                 },
                 {
                     "value": "en",
                     "label": "English"
+                },
+                {
+                    "value": "fi",
+                    "label": "Finnish"
                 },
                 {
                     "value": "fr",
@@ -79,8 +91,8 @@
                     "label": "German"
                 },
                 {
-                    "value": "hi",
-                    "label": "Hindi"
+                    "value": "hu",
+                    "label": "Hungarian"
                 },
                 {
                     "value": "it",
@@ -95,12 +107,32 @@
                     "label": "Korean"
                 },
                 {
+                    "value": "no",
+                    "label": "Norwegian"
+                },
+                {
+                    "value": "pl",
+                    "label": "Polish"
+                },
+                {
                     "value": "pt",
                     "label": "Portuguese"
                 },
                 {
+                    "value": "ru",
+                    "label": "Russian"
+                },
+                {
                     "value": "es",
                     "label": "Spanish"
+                },
+                {
+                    "value": "sv",
+                    "label": "Swedish"
+                },
+                {
+                    "value": "tr",
+                    "label": "Turkish"
                 }
             ],
             "defaultValue": "en"
@@ -205,7 +237,7 @@
         },
         {
             "name": "error_handling",
-            "label": "API error handling",
+            "label": "Error handling",
             "type": "SELECT",
             "visibilityCondition": "model.expert == true",
             "selectChoices": [

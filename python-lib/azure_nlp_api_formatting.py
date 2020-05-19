@@ -1,13 +1,9 @@
 # -*- coding: utf-8 -*-
 import logging
-import os
 from typing import AnyStr, Dict, List
 from enum import Enum
 
 import pandas as pd
-from azure.ai.textanalytics import TextAnalyticsClient
-from azure.core.credentials import AzureKeyCredential
-from azure.core.exceptions import AzureError
 
 from plugin_io_utils import (
     API_COLUMN_NAMES_DESCRIPTION_DICT,
@@ -22,17 +18,6 @@ from plugin_io_utils import (
 # ==============================================================================
 # CONSTANT DEFINITION
 # ==============================================================================
-
-API_EXCEPTIONS = (AzureError, TypeError, ValueError)
-
-API_SUPPORT_BATCH = True
-BATCH_RESULT_KEY = ""
-BATCH_ERROR_KEY = ""
-BATCH_INDEX_KEY = ""
-BATCH_ERROR_MESSAGE_KEY = ""
-BATCH_ERROR_TYPE_KEY = ""
-
-VERBOSE = False
 
 
 class EntityTypeEnum(Enum):
@@ -50,22 +35,6 @@ class EntityTypeEnum(Enum):
 # ==============================================================================
 # CLASS AND FUNCTION DEFINITION
 # ==============================================================================
-
-
-def get_client(api_configuration_preset):
-    api_key = api_configuration_preset.get("azure_api_key", "")
-    if str(api_key) == "":
-        api_key = os.environ["AZURE_TEXT_ANALYTICS_KEY"]
-    credential = AzureKeyCredential(api_key)
-    region = api_configuration_preset.get("azure_region", "")
-    endpoint = "https://{}.api.cognitive.microsoft.com/".format(region)
-    if str(region) == "":
-        endpoint = os.environ["AZURE_TEXT_ANALYTICS_ENDPOINT"]
-    text_analytics_client = TextAnalyticsClient(
-        endpoint=endpoint, credential=credential
-    )
-    logging.info("Credentials loaded")
-    return text_analytics_client
 
 
 class GenericAPIFormatter:
@@ -117,6 +86,9 @@ class LanguageDetectionAPIFormatter(GenericAPIFormatter):
         error_handling: ErrorHandlingEnum = ErrorHandlingEnum.LOG,
     ):
         super().__init__(input_df, column_prefix, error_handling)
+        self.language_name_column = generate_unique(
+            "language_name", input_df.keys(), self.column_prefix
+        )
         self.language_code_column = generate_unique(
             "language_code", input_df.keys(), self.column_prefix
         )
@@ -127,8 +99,11 @@ class LanguageDetectionAPIFormatter(GenericAPIFormatter):
 
     def _compute_column_description(self):
         self.column_description_dict[
+            self.language_name_column
+        ] = "Language name detected by the API"
+        self.column_description_dict[
             self.language_code_column
-        ] = "Language code from the API in ISO 639 format"
+        ] = "Language code in ISO 639 format"
         self.column_description_dict[
             self.language_score_column
         ] = "Confidence score of the API from 0 to 1"
@@ -136,12 +111,14 @@ class LanguageDetectionAPIFormatter(GenericAPIFormatter):
     def format_row(self, row: Dict) -> Dict:
         raw_response = row[self.api_column_names.response]
         response = safe_json_loads(raw_response, self.error_handling)
+        row[self.language_name_column] = ""
         row[self.language_code_column] = ""
         row[self.language_score_column] = None
-        languages = response.get("Languages", [])
+        languages = response.get("detectedLanguages", [])
         if len(languages) != 0:
-            row[self.language_code_column] = languages[0].get("LanguageCode", "")
-            row[self.language_score_column] = languages[0].get("Score", None)
+            row[self.language_name_column] = languages[0].get("name", "")
+            row[self.language_code_column] = languages[0].get("iso6391Name", "")
+            row[self.language_score_column] = float(languages[0].get("score"))
         return row
 
 
