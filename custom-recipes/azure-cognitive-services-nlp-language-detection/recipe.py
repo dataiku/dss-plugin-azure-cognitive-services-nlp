@@ -1,5 +1,4 @@
 # -*- coding: utf-8 -*-
-import json
 from typing import List, Dict, AnyStr
 
 from retry import retry
@@ -75,7 +74,9 @@ batch_kwargs = {
 
 @retry((RateLimitException, OSError), delay=api_quota_period, tries=5)
 @limits(calls=api_quota_rate_limit, period=api_quota_period)
-def call_api_language_detection(batch: List[Dict], text_column: AnyStr) -> List[Dict]:
+def call_api_language_detection(
+    batch: List[Dict], text_column: AnyStr, country_hint: AnyStr = ""
+) -> List[Dict]:
     document_list = {
         "documents": [
             {

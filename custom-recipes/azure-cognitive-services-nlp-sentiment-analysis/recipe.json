@@ -1,7 +1,7 @@
 {
     "meta": {
         "label": "Sentiment Analysis",
-        "description": "Analyze the sentiment polarity (positive, negative, neutral, mixed) of a text",
+        "description": "Analyze the sentiment polarity (positive, negative, neutral) of a text",
         "icon": "icon-azure-cognitive-services icon-cloud",
         "displayOrderRank": 2
     },
@@ -136,6 +136,7 @@
         {
             "name": "language_column",
             "label": "Language column",
+            "description": "Language code column in ISO 639 format",
             "type": "COLUMN",
             "columnRole": "input_dataset",
             "mandatory": false,

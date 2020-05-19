@@ -121,7 +121,9 @@ def api_call_batch(
                     # result must be json serializable
                     batch[i][api_column_names.response] = json.dumps(result[0])
                 if len(error) != 0:
-                    logging.warning(str(error))
+                    logging.warning(str(error[0]))
+                    # custom for Azure edge case which is highly nested
+                    error = error[0].get("error", {}).get("innerError", {})
                     batch[i][api_column_names.error_message] = error.get(
                         batch_error_message_key, ""
                     )

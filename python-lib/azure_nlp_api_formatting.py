@@ -21,15 +21,19 @@ from plugin_io_utils import (
 
 
 class EntityTypeEnum(Enum):
-    COMMERCIAL_ITEM = "Commercial item"
-    DATE = "Date"
-    EVENT = "Event"
-    LOCATION = "Location"
-    ORGANIZATION = "Organization"
-    OTHER = "Other"
-    PERSON = "Person"
-    QUANTITY = "Quantity"
-    TITLE = "Title"
+    DateTime = "Date and Time entities"
+    Email = "Email"
+    Event = "Event"
+    IPAddress = "IP Address"
+    Location = "Location"
+    Organization = "Organization"
+    Person = "Person"
+    PersonType = "Job type or role"
+    PhoneNumber = "Phone number"
+    Product = "Product"
+    Quantity = "Quantity"
+    Skill = "Skill"
+    URL = "URL"
 
 
 # ==============================================================================
@@ -142,14 +146,14 @@ class SentimentAnalysisAPIFormatter(GenericAPIFormatter):
         )
         self.sentiment_score_column_dict = {
             p: generate_unique("score_" + p.lower(), input_df.keys(), column_prefix)
-            for p in ["Positive", "Neutral", "Negative", "Mixed"]
+            for p in ["positive", "neutral", "negative"]
         }
         self._compute_column_description()
 
     def _compute_column_description(self):
         self.column_description_dict[
             self.sentiment_prediction_column
-        ] = "Sentiment prediction from the API (POSITIVE/NEUTRAL/NEGATIVE/MIXED)"
+        ] = "Sentiment prediction from the API (positive/neutral/negative)"
         for prediction, column_name in self.sentiment_score_column_dict.items():
             self.column_description_dict[
                 column_name
@@ -160,8 +164,8 @@ class SentimentAnalysisAPIFormatter(GenericAPIFormatter):
     def format_row(self, row: Dict) -> Dict:
         raw_response = row[self.api_column_names.response]
         response = safe_json_loads(raw_response, self.error_handling)
-        row[self.sentiment_prediction_column] = response.get("Sentiment", "")
-        sentiment_score = response.get("SentimentScore", {})
+        row[self.sentiment_prediction_column] = response.get("sentiment", "")
+        sentiment_score = response.get("documentScores", {})
         for prediction, column_name in self.sentiment_score_column_dict.items():
             row[column_name] = None
             score = sentiment_score.get(prediction)

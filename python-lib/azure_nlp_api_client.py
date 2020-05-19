@@ -15,7 +15,7 @@ BATCH_RESULT_KEY = "documents"
 BATCH_ERROR_KEY = "errors"
 BATCH_INDEX_KEY = "id"
 BATCH_ERROR_MESSAGE_KEY = "message"
-BATCH_ERROR_TYPE_KEY = ""
+BATCH_ERROR_TYPE_KEY = "code"
 
 # ==============================================================================
 # CLASS AND FUNCTION DEFINITION
@@ -55,8 +55,11 @@ class get_client:
     def analyze_sentiment(self, data):
         return self._post("sentiment", data)
 
-    def recognize_entities(self, data):
-        return self._post("entities", data)
+    def recognize_entities_general(self, data):
+        return self._post("entities/recognition/general", data)
+
+    def recognize_entities_pii(self, data):
+        return self._post("entities/recognition/pii", data)
 
     def extract_keyphrases(self, data):
         return self._post("keyPhrases", data)

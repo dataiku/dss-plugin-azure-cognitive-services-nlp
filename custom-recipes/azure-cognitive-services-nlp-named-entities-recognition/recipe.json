@@ -140,6 +140,7 @@
         {
             "name": "language_column",
             "label": "Language column",
+            "description": "Language code column in ISO 639 format",
             "type": "COLUMN",
             "columnRole": "input_dataset",
             "mandatory": false,
@@ -180,48 +181,64 @@
             "mandatory": true,
             "selectChoices": [
                 {
-                    "value": "COMMERCIAL_ITEM",
-                    "label": "Commercial item"
+                    "value": "DateTime",
+                    "label": "Date and Time entities"
                 },
                 {
-                    "value": "DATE",
-                    "label": "Date"
-                },
-                {
-                    "value": "EVENT",
+                    "value": "Event",
                     "label": "Event"
                 },
                 {
-                    "value": "LOCATION",
+                    "value": "Location",
                     "label": "Location"
                 },
                 {
-                    "value": "ORGANIZATION",
+                    "value": "Organization",
                     "label": "Organization"
                 },
                 {
-                    "value": "OTHER",
-                    "label": "Other"
-                },
-                {
-                    "value": "PERSON",
+                    "value": "Person",
                     "label": "Person"
                 },
                 {
-                    "value": "QUANTITY",
+                    "value": "Product",
+                    "label": "Product"
+                },
+                {
+                    "value": "Quantity",
                     "label": "Quantity"
                 },
                 {
-                    "value": "TITLE",
-                    "label": "Title"
+                    "value": "PersonType",
+                    "label": "Job type or role"
+                },
+                {
+                    "value": "Skill",
+                    "label": "Skill"
+                },
+                {
+                    "value": "Email",
+                    "label": "Email"
+                },
+                {
+                    "value": "PhoneNumber",
+                    "label": "Phone number"
+                },
+                {
+                    "value": "URL",
+                    "label": "URL"
+                },
+                {
+                    "value": "IPAddress",
+                    "label": "IP Address"
                 }
             ],
             "defaultValue": [
-                "COMMERCIAL_ITEM",
-                "EVENT",
-                "LOCATION",
-                "ORGANIZATION",
-                "PERSON"
+                "Event",
+                "Location",
+                "Organization",
+                "Person",
+                "Product"
             ]
         },
         {
