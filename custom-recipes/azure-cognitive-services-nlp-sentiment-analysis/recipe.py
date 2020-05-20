@@ -5,27 +5,10 @@ from retry import retry
 from ratelimit import limits, RateLimitException
 
 import dataiku
-from dataiku.customrecipe import (
-    get_recipe_config,
-    get_input_names_for_role,
-    get_output_names_for_role,
-)
+from dataiku.customrecipe import get_recipe_config, get_input_names_for_role, get_output_names_for_role
 
-from plugin_io_utils import (
-    ErrorHandlingEnum,
-    validate_column_input,
-    set_column_description,
-)
-from azure_nlp_api_client import (
-    API_EXCEPTIONS,
-    API_SUPPORT_BATCH,
-    BATCH_RESULT_KEY,
-    BATCH_ERROR_KEY,
-    BATCH_INDEX_KEY,
-    BATCH_ERROR_MESSAGE_KEY,
-    BATCH_ERROR_TYPE_KEY,
-    get_client,
-)
+from plugin_io_utils import ErrorHandlingEnum, validate_column_input, set_column_description
+from azure_nlp_api_client import API_EXCEPTIONS, batch_api_response_parser, get_client
 from api_parallelizer import api_parallelizer
 from azure_nlp_api_formatting import SentimentAnalysisAPIFormatter
 
@@ -58,13 +41,9 @@ client = get_client(api_configuration_preset)
 column_prefix = "sentiment_api"
 
 batch_kwargs = {
-    "api_support_batch": API_SUPPORT_BATCH,
+    "api_support_batch": True,
     "batch_size": batch_size,
-    "batch_result_key": BATCH_RESULT_KEY,
-    "batch_error_key": BATCH_ERROR_KEY,
-    "batch_index_key": BATCH_INDEX_KEY,
-    "batch_error_message_key": BATCH_ERROR_MESSAGE_KEY,
-    "batch_error_type_key": BATCH_ERROR_TYPE_KEY,
+    "batch_api_response_parser": batch_api_response_parser,
 }
 
 
@@ -76,19 +55,14 @@ batch_kwargs = {
 @retry((RateLimitException, OSError), delay=api_quota_period, tries=5)
 @limits(calls=api_quota_rate_limit, period=api_quota_period)
 def call_api_sentiment_analysis(
-    batch: List[Dict],
-    text_column: AnyStr,
-    text_language: AnyStr,
-    language_column: AnyStr = None,
+    batch: List[Dict], text_column: AnyStr, text_language: AnyStr, language_column: AnyStr = None,
 ) -> List[Dict]:
     document_list = {
         "documents": [
             {
                 "id": str(index),
                 "text": str(row.get(text_column, "")).strip(),
-                "language": str(row.get(language_column, ""))
-                if text_language == "language_column"
-                else text_language,
+                "language": str(row.get(language_column, "")) if text_language == "language_column" else text_language,
             }
             for index, row in enumerate(batch)
         ]
@@ -114,9 +88,6 @@ api_formatter = SentimentAnalysisAPIFormatter(
     input_df=input_df, column_prefix=column_prefix, error_handling=error_handling,
 )
 output_df = api_formatter.format_df(df)
-
-print("foo")
-print(output_df.columns)
 
 output_dataset.write_with_schema(output_df)
 set_column_description(

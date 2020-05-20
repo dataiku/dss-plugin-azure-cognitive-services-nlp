@@ -86,9 +86,7 @@ def call_api_key_phrase_extraction(
         return json.dumps(response)
     else:
         text_list = [str(r.get(text_column, "")).strip() for r in batch]
-        responses = client.batch_detect_key_phrases(
-            TextList=text_list, LanguageCode=text_language
-        )
+        responses = client.batch_detect_key_phrases(TextList=text_list, LanguageCode=text_language)
         return responses
 
 
@@ -106,10 +104,7 @@ df = api_parallelizer(
 )
 
 api_formatter = KeyPhraseExtractionAPIFormatter(
-    input_df=input_df,
-    num_key_phrases=num_key_phrases,
-    column_prefix=column_prefix,
-    error_handling=error_handling,
+    input_df=input_df, num_key_phrases=num_key_phrases, column_prefix=column_prefix, error_handling=error_handling,
 )
 output_df = api_formatter.format_df(df)
 
