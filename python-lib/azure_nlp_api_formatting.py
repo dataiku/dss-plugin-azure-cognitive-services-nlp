@@ -3,7 +3,6 @@ import logging
 from typing import AnyStr, Dict, List
 from enum import Enum
 
-
 import pandas as pd
 
 from plugin_io_utils import (
@@ -200,6 +199,63 @@ class NamedEntityRecognitionAPIFormatter(GenericAPIFormatter):
             ]
             if len(row[entity_type_column]) == 0:
                 row[entity_type_column] = ""
+        return row
+
+
+class PIIExtractionAPIFormatter(GenericAPIFormatter):
+    """
+    Formatter class for PII Extraction API responses:
+    - make sure response is valid JSON
+    - extract list of PII data
+    - output a redacted version of the input column without PII
+    - compute column descriptions
+    """
+
+    def __init__(
+        self,
+        input_df: pd.DataFrame,
+        text_column: AnyStr,
+        minimum_score: float,
+        column_prefix: AnyStr = "pii_api",
+        error_handling: ErrorHandlingEnum = ErrorHandlingEnum.LOG,
+    ):
+        super().__init__(input_df, column_prefix, error_handling)
+        self.text_column = str(text_column)
+        self.minimum_score = float(minimum_score)
+        self.pii_column_text = generate_unique("text_list", self.input_df.keys(), self.column_prefix)
+        self.pii_column_raw = generate_unique("raw_list", self.input_df.keys(), self.column_prefix)
+        self.pii_column_redacted = generate_unique("redacted", self.input_df.keys(), self.column_prefix)
+        self._compute_column_description()
+
+    def _compute_column_description(self):
+        self.column_description_dict[self.pii_column_text] = "List of PII in text format"
+        self.column_description_dict[self.pii_column_raw] = "List of PII in JSON format"
+        self.column_description_dict[self.pii_column_redacted] = "Redacted version of the input column without PII"
+
+    def format_row(self, row: Dict) -> Dict:
+        raw_response = row[self.api_column_names.response]
+        response = safe_json_loads(raw_response, self.error_handling)
+        entities = response.get("entities", [])
+        entities_filtered = [
+            e
+            for e in entities
+            if e.get("score", 0) >= self.minimum_score
+            and e.get("text", "") != ""
+            and e.get("type", "") not in {"Organization", "DateTime", "Quantity"}
+        ]
+        text_to_redact = str(row.get(self.text_column, ""))
+        row[self.pii_column_redacted] = ""
+        row[self.pii_column_text] = ""
+        row[self.pii_column_raw] = ""
+        if len(entities_filtered) != 0:
+            row[self.pii_column_raw] = entities_filtered
+            row[self.pii_column_text] = [e.get("text") for e in entities_filtered]
+            entities_reversed = sorted(entities_filtered, key=lambda x: int(x.get("offset", -1)), reverse=True)
+            for e in entities_reversed:
+                start = int(e.get("offset"))
+                end = start + int(e.get("length"))
+                text_to_redact = text_to_redact[:start] + "" + text_to_redact[end:]
+            row[self.pii_column_redacted] = text_to_redact
         return row
 
 
