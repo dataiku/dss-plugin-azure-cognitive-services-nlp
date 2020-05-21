@@ -224,30 +224,17 @@ class KeyPhraseExtractionAPIFormatter(GenericAPIFormatter):
 
     def _compute_column_description(self):
         for n in range(self.num_key_phrases):
-            keyphrase_column = generate_unique(
-                "keyphrase_" + str(n + 1) + "_text", self.input_df.keys(), self.column_prefix,
-            )
-            confidence_column = generate_unique(
-                "keyphrase_" + str(n + 1) + "_confidence", self.input_df.keys(), self.column_prefix,
-            )
+            keyphrase_column = generate_unique("keyphrase_" + str(n + 1), self.input_df.keys(), self.column_prefix,)
             self.column_description_dict[keyphrase_column] = "Keyphrase {} extracted by the API".format(str(n + 1))
-            self.column_description_dict[confidence_column] = "Confidence score in Keyphrase {} from 0 to 1".format(
-                str(n + 1)
-            )
 
     def format_row(self, row: Dict) -> Dict:
         raw_response = row[self.api_column_names.response]
         response = safe_json_loads(raw_response, self.error_handling)
-        key_phrases = sorted(response.get("KeyPhrases", []), key=lambda x: x.get("Score"), reverse=True)
+        key_phrases = response.get("keyPhrases", [])
         for n in range(self.num_key_phrases):
-            keyphrase_column = generate_unique("keyphrase_" + str(n + 1) + "_text", row.keys(), self.column_prefix)
-            confidence_column = generate_unique(
-                "keyphrase_" + str(n + 1) + "_confidence", row.keys(), self.column_prefix,
-            )
+            keyphrase_column = generate_unique("keyphrase_" + str(n + 1), row.keys(), self.column_prefix)
             if len(key_phrases) > n:
-                row[keyphrase_column] = key_phrases[n].get("Text", "")
-                row[confidence_column] = key_phrases[n].get("Score")
+                row[keyphrase_column] = key_phrases[n]
             else:
                 row[keyphrase_column] = ""
-                row[confidence_column] = None
         return row
