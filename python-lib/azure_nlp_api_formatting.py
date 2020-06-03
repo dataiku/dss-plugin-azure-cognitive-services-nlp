@@ -239,7 +239,7 @@ class PIIExtractionAPIFormatter(GenericAPIFormatter):
         entities = [
             e
             for e in response.get("entities", [])
-            if e.get("text", "") != "" and e.get("type", "") not in {"Organization", "DateTime", "Quantity"}
+            if e.get("text", "") != "" and e.get("category", "") not in {"Organization", "DateTime", "Quantity"}
         ]
         entities_filtered = [e for e in entities if float(e.get("confidenceScore", 0)) >= self.minimum_score]
         discarded_entities = [e for e in entities if float(e.get("confidenceScore", 0)) < self.minimum_score]
