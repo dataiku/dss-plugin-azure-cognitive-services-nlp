@@ -67,6 +67,10 @@
                     "label": "Chinese (Simplified)"
                 },
                 {
+                    "value": "zh-hant",
+                    "label": "Chinese (Traditional)"
+                },
+                {
                     "value": "da",
                     "label": "Danish"
                 },
@@ -89,6 +93,10 @@
                 {
                     "value": "de",
                     "label": "German"
+                },
+                {
+                    "value": "he",
+                    "label": "Hebrew"
                 },
                 {
                     "value": "hu",

@@ -55,10 +55,6 @@
                     "label": "Detected language column"
                 },
                 {
-                    "value": "da",
-                    "label": "Danish"
-                },
-                {
                     "value": "nl",
                     "label": "Dutch"
                 },
