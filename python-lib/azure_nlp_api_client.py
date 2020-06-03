@@ -31,7 +31,7 @@ class get_client:
             "Content-Type": "application/json",
             "Ocp-Apim-Subscription-Key": self.api_key,
         }
-        self.version = "v3.0-preview.1"
+        self.version = "v3.0"
         self.base_url = "{}/text/analytics/{}/".format(self.endpoint, self.version)
         logging.info("Credentials loaded")
 
