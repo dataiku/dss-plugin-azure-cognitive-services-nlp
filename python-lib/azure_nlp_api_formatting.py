@@ -102,14 +102,12 @@ class LanguageDetectionAPIFormatter(GenericAPIFormatter):
     def format_row(self, row: Dict) -> Dict:
         raw_response = row[self.api_column_names.response]
         response = safe_json_loads(raw_response, self.error_handling)
-        row[self.language_name_column] = ""
-        row[self.language_code_column] = ""
+        language = response.get("detectedLanguage", {})
+        row[self.language_name_column] = language.get("name", "")
+        row[self.language_code_column] = language.get("iso6391Name", "")
         row[self.language_score_column] = None
-        languages = response.get("detectedLanguages", [])
-        if len(languages) != 0:
-            row[self.language_name_column] = languages[0].get("name", "")
-            row[self.language_code_column] = languages[0].get("iso6391Name", "")
-            row[self.language_score_column] = float(languages[0].get("score"))
+        if language.get("confidenceScore") is not None:
+            row[self.language_score_column] = float(language.get("confidenceScore"))
         return row
 
 
@@ -148,7 +146,7 @@ class SentimentAnalysisAPIFormatter(GenericAPIFormatter):
         raw_response = row[self.api_column_names.response]
         response = safe_json_loads(raw_response, self.error_handling)
         row[self.sentiment_prediction_column] = response.get("sentiment", "")
-        sentiment_score = response.get("documentScores", {})
+        sentiment_score = response.get("confidenceScores", {})
         for prediction, column_name in self.sentiment_score_column_dict.items():
             row[column_name] = None
             score = sentiment_score.get(prediction)
@@ -195,8 +193,11 @@ class NamedEntityRecognitionAPIFormatter(GenericAPIFormatter):
             row[entity_type_column] = [
                 e.get("text")
                 for e in entities
-                if e.get("type", "") == n and float(e.get("score", 0)) >= self.minimum_score
+                if e.get("category", "") == n and float(e.get("confidenceScore", 0)) >= self.minimum_score
             ]
+            discarded_entities = [e for e in entities if float(e.get("confidenceScore", 0)) < self.minimum_score]
+            if len(discarded_entities) != 0:
+                logging.info("Discarding {} entities below the minimum score threshold".format(len(discarded_entities)))
             if len(row[entity_type_column]) == 0:
                 row[entity_type_column] = ""
         return row
@@ -235,14 +236,15 @@ class PIIExtractionAPIFormatter(GenericAPIFormatter):
     def format_row(self, row: Dict) -> Dict:
         raw_response = row[self.api_column_names.response]
         response = safe_json_loads(raw_response, self.error_handling)
-        entities = response.get("entities", [])
-        entities_filtered = [
+        entities = [
             e
-            for e in entities
-            if e.get("score", 0) >= self.minimum_score
-            and e.get("text", "") != ""
-            and e.get("type", "") not in {"Organization", "DateTime", "Quantity"}
+            for e in response.get("entities", [])
+            if e.get("text", "") != "" and e.get("type", "") not in {"Organization", "DateTime", "Quantity"}
         ]
+        entities_filtered = [e for e in entities if float(e.get("confidenceScore", 0)) >= self.minimum_score]
+        discarded_entities = [e for e in entities if float(e.get("confidenceScore", 0)) < self.minimum_score]
+        if len(discarded_entities) != 0:
+            logging.info("Discarding {} entities below the minimum score threshold".format(len(discarded_entities)))
         text_to_redact = str(row.get(self.text_column, ""))
         row[self.pii_column_redacted] = ""
         row[self.pii_column_text] = ""

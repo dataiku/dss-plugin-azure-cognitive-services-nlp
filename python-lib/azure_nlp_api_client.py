@@ -73,7 +73,7 @@ def batch_api_response_parser(batch: List[Dict], response: Union[Dict, List], ap
         if len(error) != 0:
             logging.warning(str(error[0]))
             # custom for Azure edge case which is highly nested
-            inner_error = error[0].get("error", {}).get("innerError", {})
+            inner_error = error[0].get("error", {}).get("innererror", {})
             batch[i][api_column_names.error_message] = inner_error.get("message", "")
             batch[i][api_column_names.error_type] = inner_error.get("code", "")
             batch[i][api_column_names.error_raw] = str(error[0])
