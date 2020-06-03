@@ -188,6 +188,14 @@ class NamedEntityRecognitionAPIFormatter(GenericAPIFormatter):
         response = safe_json_loads(raw_response, self.error_handling)
         entities = response.get("entities", [])
         selected_entity_types = sorted([e.name for e in self.entity_types])
+        discarded_entities = [
+            e
+            for e in entities
+            if float(e.get("confidenceScore", 0)) < self.minimum_score
+            and e.get("category", "") in selected_entity_types
+        ]
+        if len(discarded_entities) != 0:
+            logging.info("Discarding {} entities below the minimum score threshold".format(len(discarded_entities)))
         for n in selected_entity_types:
             entity_type_column = generate_unique("entity_type_" + n.lower(), row.keys(), self.column_prefix)
             row[entity_type_column] = [
@@ -195,9 +203,6 @@ class NamedEntityRecognitionAPIFormatter(GenericAPIFormatter):
                 for e in entities
                 if e.get("category", "") == n and float(e.get("confidenceScore", 0)) >= self.minimum_score
             ]
-            discarded_entities = [e for e in entities if float(e.get("confidenceScore", 0)) < self.minimum_score]
-            if len(discarded_entities) != 0:
-                logging.info("Discarding {} entities below the minimum score threshold".format(len(discarded_entities)))
             if len(row[entity_type_column]) == 0:
                 row[entity_type_column] = ""
         return row
