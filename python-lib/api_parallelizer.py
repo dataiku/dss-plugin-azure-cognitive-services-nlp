@@ -58,10 +58,12 @@ def api_call_single_row(
             row[api_column_names.response] = response
         except api_exceptions as e:
             logging.warning(str(e))
-            module = str(inspect.getmodule(e).__name__)
+            module = inspect.getmodule(e)
+            if module is not None:
+                module_name = str(module.__name__)
             error_name = str(type(e).__qualname__)
             row[api_column_names.error_message] = str(e)
-            row[api_column_names.error_type] = ".".join([module, error_name])
+            row[api_column_names.error_type] = ".".join([module_name, error_name])
             row[api_column_names.error_raw] = str(e.args)
     return row
 
@@ -98,12 +100,14 @@ def api_call_batch(
             batch = batch_api_response_parser(batch=batch, response=response, api_column_names=api_column_names)
         except api_exceptions as e:
             logging.warning(str(e))
-            module = str(inspect.getmodule(e).__name__)
+            module = inspect.getmodule(e)
+            if module is not None:
+                module_name = str(module.__name__)
             error_name = str(type(e).__qualname__)
             for row in batch:
                 row[api_column_names.response] = ""
                 row[api_column_names.error_message] = str(e)
-                row[api_column_names.error_type] = ".".join([module, error_name])
+                row[api_column_names.error_type] = ".".join([module_name, error_name])
                 row[api_column_names.error_raw] = str(e.args)
     return batch
 
