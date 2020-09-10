@@ -49,8 +49,9 @@
             "description": "Maximum number of requests per period for one DSS activity. Reduce for concurrent activities.",
             "type": "INT",
             "mandatory": true,
-            "defaultValue": 1000,
-            "minI": 1
+            "defaultValue": 300,
+            "minI": 1,
+            "maxI": 1000
         },
         {
             "name": "separator_performance",
@@ -63,7 +64,7 @@
             "description": "Number of rows to send to the API in batch (max 1000). Increase to speed-up computation within the quota defined above.",
             "type": "INT",
             "mandatory": true,
-            "defaultValue": 10,
+            "defaultValue": 5,
             "minI": 1,
             "maxI": 1000
         },

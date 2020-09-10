@@ -36,6 +36,8 @@ output_dataset_name = get_output_names_for_role("output_dataset")[0]
 output_dataset = dataiku.Dataset(output_dataset_name)
 
 validate_column_input(text_column, input_columns_names)
+if text_language == "language_column":
+    validate_column_input(language_column, input_columns_names)
 input_df = input_dataset.get_dataframe()
 api_wrapper = AzureNLPAPIWrapper(api_configuration_preset)
 column_prefix = "sentiment_api"
