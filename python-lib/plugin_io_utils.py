@@ -72,15 +72,18 @@ def safe_json_loads(
     - 'FAIL' to use json.loads, which throws an exception on invalid data
     - 'LOG' to try json.loads and return an empty dict if data is invalid
     """
-    if error_handling == ErrorHandlingEnum.FAIL:
+    output = {}
+    try:
         output = json.loads(str_to_check)
-    else:
-        try:
-            output = json.loads(str_to_check)
-        except (TypeError, ValueError):
-            if verbose:
-                logging.warning("Invalid JSON: '" + str(str_to_check) + "'")
-            output = {}
+    except json.decoder.JSONDecodeError as e:
+        if str_to_check == "":
+            error_message = "Invalid JSON: no API response"
+        else:
+            error_message = "Invalid JSON: '{}' because of error: {}".format(str_to_check, e)
+        if error_handling == ErrorHandlingEnum.LOG and verbose:
+            logging.warning(error_message)
+        if error_handling == ErrorHandlingEnum.FAIL:
+            raise ValueError(error_message)
     return output
 
 
