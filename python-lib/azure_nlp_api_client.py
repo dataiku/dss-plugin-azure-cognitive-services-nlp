@@ -23,7 +23,7 @@ class AzureNLPAPIWrapper:
         self.api_key = str(api_configuration_preset.get("azure_api_key", ""))
         self.region = str(api_configuration_preset.get("azure_region", ""))
         self.endpoint = "https://{}.api.cognitive.microsoft.com".format(self.region)
-        if self.api_key is None or self.api_key == "":
+        if not self.api_key:
             self.api_key = os.environ["AZURE_TEXT_ANALYTICS_KEY"]
         if self.region is None or self.region == "":
             self.endpoint = os.environ["AZURE_TEXT_ANALYTICS_ENDPOINT"]
