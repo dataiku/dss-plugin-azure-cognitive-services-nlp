@@ -25,7 +25,7 @@ class AzureNLPAPIWrapper:
         self.endpoint = "https://{}.api.cognitive.microsoft.com".format(self.region)
         if not self.api_key:
             self.api_key = os.environ["AZURE_TEXT_ANALYTICS_KEY"]
-        if self.region is None or self.region == "":
+        if not self.region:
             self.endpoint = os.environ["AZURE_TEXT_ANALYTICS_ENDPOINT"]
         self.headers = {
             "Content-Type": "application/json",
