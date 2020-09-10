@@ -8,7 +8,7 @@ import dataiku
 from dataiku.customrecipe import get_recipe_config, get_input_names_for_role, get_output_names_for_role
 
 from plugin_io_utils import ErrorHandlingEnum, validate_column_input, set_column_description
-from azure_nlp_api_client import API_EXCEPTIONS, batch_api_response_parser, get_client
+from azure_nlp_api_client import API_EXCEPTIONS, batch_api_response_parser, AzureNLPAPIWrapper
 from api_parallelizer import api_parallelizer
 from azure_nlp_api_formatting import LanguageDetectionAPIFormatter
 
@@ -36,7 +36,7 @@ output_dataset = dataiku.Dataset(output_dataset_name)
 
 validate_column_input(text_column, input_columns_names)
 input_df = input_dataset.get_dataframe()
-client = get_client(api_configuration_preset)
+api_wrapper = AzureNLPAPIWrapper(api_configuration_preset)
 column_prefix = "lang_detect_api"
 
 batch_kwargs = {
@@ -60,7 +60,7 @@ def call_api_language_detection(batch: List[Dict], text_column: AnyStr, country_
             for index, row in enumerate(batch)
         ]
     }
-    responses = client.detect_language(document_list)
+    responses = api_wrapper.detect_language(document_list)
     return responses
 
 

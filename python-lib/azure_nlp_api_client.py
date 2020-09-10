@@ -16,7 +16,7 @@ API_EXCEPTIONS = requests.RequestException
 # ==============================================================================
 
 
-class get_client:
+class AzureNLPAPIWrapper:
     def __init__(self, api_configuration_preset):
         if api_configuration_preset is None or api_configuration_preset == {}:
             raise ValueError("No Azure credentials provided, please enter an API configuration preset")
