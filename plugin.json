@@ -1,6 +1,6 @@
 {
     "id": "azure-cognitive-services-nlp",
-    "version": "1.0.1",
+    "version": "1.0.2",
     "meta": {
         "label": "Azure Cognitive Services - Text Analytics",
         "category": "Natural Language Processing",
