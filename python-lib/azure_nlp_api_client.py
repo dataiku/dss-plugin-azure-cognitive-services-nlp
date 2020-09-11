@@ -67,6 +67,9 @@ def batch_api_response_parser(batch: List[Dict], response: Union[Dict, List], ap
             batch[i][k] = ""
         result = [r for r in results if str(r.get("id", "")) == str(i)]
         error = [r for r in errors if str(r.get("id", "")) == str(i)]
+        if "error" in response and "documents" not in response:
+            # case when the whole batch fails with a single error key
+            error = [response]
         if len(result) != 0:
             # result must be json serializable
             batch[i][api_column_names.response] = json.dumps(result[0])
