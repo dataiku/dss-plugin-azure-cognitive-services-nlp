@@ -79,7 +79,7 @@ def batch_api_response_parser(batch: List[Dict], response: Union[Dict, List], ap
             error_dict = raw_error.get("error", {})
             if "innererror" in error_dict:
                 error_dict = error_dict.get("innererror", {})
-            batch[i][api_column_names.error_message] = error_dict.get("message", "")
-            batch[i][api_column_names.error_type] = error_dict.get("code", "")
+            batch[i][api_column_names.error_message] = error_dict.get("message", str(raw_error))
+            batch[i][api_column_names.error_type] = error_dict.get("code", "Undefined API error")
             batch[i][api_column_names.error_raw] = str(raw_error)
     return batch
