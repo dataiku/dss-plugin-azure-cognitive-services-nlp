@@ -1,9 +1,9 @@
 {
     "meta": {
         "label": "Key Phrase Extraction",
-        "description": "Detect key phrases (typically one to four words each) in texts to easily identify the main points",
-        "icon": "icon-lightbulb",
-        "iconColor": "blue"
+        "description": "Extract key phrases (1-4 words each) in a text to identify the main points",
+        "icon": "icon-azure-cognitive-services icon-cloud",
+        "displayOrderRank": 4
     },
     "kind": "PYTHON",
     "selectableFromDataset": "input_dataset",
@@ -11,7 +11,7 @@
         {
             "name": "input_dataset",
             "label": "Input Dataset",
-            "description": "Dataset containing the data to analyze",
+            "description": "Dataset containing the text data to analyze",
             "arity": "UNARY",
             "required": true,
             "acceptsDataset": true
@@ -21,7 +21,7 @@
         {
             "name": "output_dataset",
             "label": "Output Dataset",
-            "description": "Dataset containing the enriched data from the Azure API",
+            "description": "Dataset with enriched output",
             "arity": "UNARY",
             "required": true,
             "acceptsDataset": true
@@ -29,30 +29,153 @@
     ],
     "params": [
         {
-            "name": "connection_info",
-            "label": "Azure Connection",
-            "type": "PRESET",
-            "parameterSetId" : "azure-cs-nlp-connection-info",
-            "mandatory" : true
+            "name": "separator_input",
+            "label": "Input Parameters",
+            "type": "SEPARATOR"
         },
         {
             "name": "text_column",
-            "label": "Text Column",
+            "label": "Text column",
             "type": "COLUMN",
             "columnRole": "input_dataset",
-            "mandatory": true
+            "mandatory": true,
+            "allowedColumnTypes": [
+                "string"
+            ]
         },
         {
             "name": "language",
             "label": "Language",
-            "type": "STRING",
-            "description":"in ISO 639-1 format",
-            "mandatory": false
+            "description": "List of supported languages",
+            "type": "SELECT",
+            "mandatory": true,
+            "selectChoices": [
+                {
+                    "value": "language_column",
+                    "label": "Detected language column"
+                },
+                {
+                    "value": "nl",
+                    "label": "Dutch"
+                },
+                {
+                    "value": "en",
+                    "label": "English"
+                },
+                {
+                    "value": "fi",
+                    "label": "Finnish"
+                },
+                {
+                    "value": "fr",
+                    "label": "French"
+                },
+                {
+                    "value": "de",
+                    "label": "German"
+                },
+                {
+                    "value": "it",
+                    "label": "Italian"
+                },
+                {
+                    "value": "ja",
+                    "label": "Japanese"
+                },
+                {
+                    "value": "ko",
+                    "label": "Korean"
+                },
+                {
+                    "value": "no",
+                    "label": "Norwegian"
+                },
+                {
+                    "value": "pl",
+                    "label": "Polish"
+                },
+                {
+                    "value": "pt",
+                    "label": "Portuguese"
+                },
+                {
+                    "value": "ru",
+                    "label": "Russian"
+                },
+                {
+                    "value": "es",
+                    "label": "Spanish"
+                },
+                {
+                    "value": "sv",
+                    "label": "Swedish"
+                }
+            ],
+            "defaultValue": "en"
         },
         {
-            "name": "should_output_raw_results",
-            "label": "Output Raw Response?",
-            "type": "BOOLEAN"
+            "name": "language_column",
+            "label": "Language column",
+            "type": "COLUMN",
+            "columnRole": "input_dataset",
+            "mandatory": false,
+            "allowedColumnTypes": [
+                "string"
+            ],
+            "visibilityCondition": "model.language == 'language_column'"
+        },
+        {
+            "name": "separator_configuration",
+            "label": "Configuration",
+            "type": "SEPARATOR"
+        },
+        {
+            "name": "api_configuration_preset",
+            "label": "API configuration preset",
+            "type": "PRESET",
+            "parameterSetId": "api-configuration",
+            "mandatory": true
+        },
+        {
+            "name": "separator_advanced",
+            "label": "Advanced",
+            "type": "SEPARATOR"
+        },
+        {
+            "name": "expert",
+            "label": "Expert mode",
+            "type": "BOOLEAN",
+            "defaultValue": false
+        },
+        {
+            "name": "num_key_phrases",
+            "label": "Number of key phrases",
+            "description": "Number of key phrases to extract from the API response",
+            "visibilityCondition": "model.expert == true",
+            "type": "INT",
+            "mandatory": true,
+            "defaultValue": 3,
+            "minI": 1,
+            "maxI": 100
+        },
+        {
+            "name": "error_handling",
+            "label": "Error handling",
+            "type": "SELECT",
+            "visibilityCondition": "model.expert == true",
+            "selectChoices": [
+                {
+                    "value": "FAIL",
+                    "label": "Fail"
+                },
+                {
+                    "value": "LOG",
+                    "label": "Log"
+                }
+            ],
+            "defaultValue": "LOG",
+            "mandatory": true,
+            "description": "Log API errors to the output or fail with an exception on any API error"
         }
     ]
 }

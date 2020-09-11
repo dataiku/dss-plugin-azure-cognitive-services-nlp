@@ -1,9 +1,9 @@
 {
     "meta": {
-        "label": "Named Entities Recognition",
-        "description": "Identify “real-world objects” (i.e. People names, Dates, Places, etc) in texts",
-        "icon": "icon-tags",
-        "iconColor": "blue"
+        "label": "Named Entity Recognition",
+        "description": "Recognize “real-world objects” (people names, dates, places, etc.) in a text",
+        "icon": "icon-azure-cognitive-services icon-cloud",
+        "displayOrderRank": 3
     },
     "kind": "PYTHON",
     "selectableFromDataset": "input_dataset",
@@ -11,7 +11,7 @@
         {
             "name": "input_dataset",
             "label": "Input Dataset",
-            "description": "Dataset containing the data to analyze",
+            "description": "Dataset containing the text data to analyze",
             "arity": "UNARY",
             "required": true,
             "acceptsDataset": true
@@ -20,8 +20,8 @@
     "outputRoles": [
         {
             "name": "output_dataset",
-            "label": "Output Dataset",
-            "description": "Dataset containing the enriched data from the Azure API",
+            "label": "Output dataset",
+            "description": "Dataset with enriched output",
             "arity": "UNARY",
             "required": true,
             "acceptsDataset": true
@@ -29,30 +29,256 @@
     ],
     "params": [
         {
-            "name": "connection_info",
-            "label": "Azure Connection",
-            "type": "PRESET",
-            "parameterSetId" : "azure-cs-nlp-connection-info",
-            "mandatory" : true
+            "name": "separator_input",
+            "label": "Input Parameters",
+            "type": "SEPARATOR"
         },
         {
             "name": "text_column",
-            "label": "Text Column",
+            "label": "Text column",
             "type": "COLUMN",
             "columnRole": "input_dataset",
-            "mandatory": true
+            "mandatory": true,
+            "allowedColumnTypes": [
+                "string"
+            ]
         },
         {
             "name": "language",
             "label": "Language",
-            "type": "STRING",
-            "description":"in ISO 639-1 format",
-            "mandatory": false
+            "description": "List of supported languages",
+            "type": "SELECT",
+            "mandatory": true,
+            "selectChoices": [
+                {
+                    "value": "language_column",
+                    "label": "Detected language column"
+                },
+                {
+                    "value": "ar",
+                    "label": "Arabic"
+                },
+                {
+                    "value": "cs",
+                    "label": "Czech"
+                },
+                {
+                    "value": "zh",
+                    "label": "Chinese (Simplified)"
+                },
+                {
+                    "value": "zh-hant",
+                    "label": "Chinese (Traditional)"
+                },
+                {
+                    "value": "da",
+                    "label": "Danish"
+                },
+                {
+                    "value": "nl",
+                    "label": "Dutch"
+                },
+                {
+                    "value": "en",
+                    "label": "English"
+                },
+                {
+                    "value": "fi",
+                    "label": "Finnish"
+                },
+                {
+                    "value": "fr",
+                    "label": "French"
+                },
+                {
+                    "value": "de",
+                    "label": "German"
+                },
+                {
+                    "value": "he",
+                    "label": "Hebrew"
+                },
+                {
+                    "value": "hu",
+                    "label": "Hungarian"
+                },
+                {
+                    "value": "it",
+                    "label": "Italian"
+                },
+                {
+                    "value": "ja",
+                    "label": "Japanese"
+                },
+                {
+                    "value": "ko",
+                    "label": "Korean"
+                },
+                {
+                    "value": "no",
+                    "label": "Norwegian"
+                },
+                {
+                    "value": "pl",
+                    "label": "Polish"
+                },
+                {
+                    "value": "pt",
+                    "label": "Portuguese"
+                },
+                {
+                    "value": "ru",
+                    "label": "Russian"
+                },
+                {
+                    "value": "es",
+                    "label": "Spanish"
+                },
+                {
+                    "value": "sv",
+                    "label": "Swedish"
+                },
+                {
+                    "value": "tr",
+                    "label": "Turkish"
+                }
+            ],
+            "defaultValue": "en"
         },
         {
-            "name": "should_output_raw_results",
-            "label": "Output Raw Response?",
-            "type": "BOOLEAN"
+            "name": "language_column",
+            "label": "Language column",
+            "description": "Language code column in ISO 639 format",
+            "type": "COLUMN",
+            "columnRole": "input_dataset",
+            "mandatory": false,
+            "allowedColumnTypes": [
+                "string"
+            ],
+            "visibilityCondition": "model.language == 'language_column'"
+        },
+        {
+            "name": "separator_configuration",
+            "label": "Configuration",
+            "type": "SEPARATOR"
+        },
+        {
+            "name": "api_configuration_preset",
+            "label": "API configuration preset",
+            "type": "PRESET",
+            "parameterSetId": "api-configuration",
+            "mandatory": true
+        },
+        {
+            "name": "separator_advanced",
+            "label": "Advanced",
+            "type": "SEPARATOR"
+        },
+        {
+            "name": "expert",
+            "label": "Expert mode",
+            "type": "BOOLEAN",
+            "defaultValue": false
+        },
+        {
+            "name": "entity_types",
+            "label": "Entity types",
+            "type": "MULTISELECT",
+            "visibilityCondition": "model.expert == true",
+            "description": "List of entity types to extract",
+            "mandatory": true,
+            "selectChoices": [
+                {
+                    "value": "DateTime",
+                    "label": "Date and Time entities"
+                },
+                {
+                    "value": "Event",
+                    "label": "Event"
+                },
+                {
+                    "value": "Location",
+                    "label": "Location"
+                },
+                {
+                    "value": "Organization",
+                    "label": "Organization"
+                },
+                {
+                    "value": "Person",
+                    "label": "Person"
+                },
+                {
+                    "value": "Product",
+                    "label": "Product"
+                },
+                {
+                    "value": "Quantity",
+                    "label": "Quantity"
+                },
+                {
+                    "value": "PersonType",
+                    "label": "Job type or role"
+                },
+                {
+                    "value": "Skill",
+                    "label": "Skill"
+                },
+                {
+                    "value": "Email",
+                    "label": "Email"
+                },
+                {
+                    "value": "PhoneNumber",
+                    "label": "Phone number"
+                },
+                {
+                    "value": "URL",
+                    "label": "URL"
+                },
+                {
+                    "value": "IPAddress",
+                    "label": "IP Address"
+                }
+            ],
+            "defaultValue": [
+                "Event",
+                "Location",
+                "Organization",
+                "Person",
+                "Product"
+            ]
+        },
+        {
+            "name": "minimum_score",
+            "label": "Minimum score",
+            "description": "Minimum confidence score (from 0 to 1) for the entity to be recognized as relevant",
+            "visibilityCondition": "model.expert == true",
+            "type": "DOUBLE",
+            "mandatory": true,
+            "defaultValue": 0,
+            "minD": 0,
+            "maxD": 1
+        },
+        {
+            "name": "error_handling",
+            "label": "Error handling",
+            "type": "SELECT",
+            "visibilityCondition": "model.expert == true",
+            "selectChoices": [
+                {
+                    "value": "FAIL",
+                    "label": "Fail"
+                },
+                {
+                    "value": "LOG",
+                    "label": "Log"
+                }
+            ],
+            "defaultValue": "LOG",
+            "mandatory": true,
+            "description": "Log API errors to the output or fail with an exception on any API error"
         }
-    ]
+    ],
+    "resourceKeys": []
 }

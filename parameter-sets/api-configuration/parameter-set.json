@@ -1,0 +1,82 @@
+{
+    "meta": {
+        "label": "API configuration",
+        "icon": "icon-azure-cognitive-services icon-cloud",
+        "description": "Define presets for users to call the API with specific credentials, quota and parallelization parameters"
+    },
+    "defaultDefinableAtProjectLevel": true,
+    "defaultDefinableInline": false,
+    "params": [
+        {
+            "name": "separator_authentication",
+            "label": "Authentication",
+            "description": "Please refer to the Azure documentation: https://docs.microsoft.com/en-gb/azure/cognitive-services/cognitive-services-apis-create-account/",
+            "type": "SEPARATOR"
+        },
+        {
+            "name": "azure_api_key",
+            "label": "Azure API Key",
+            "description": "If empty, attempts to ascertain key from the environment.",
+            "type": "PASSWORD",
+            "mandatory": false
+        },
+        {
+            "name": "azure_region",
+            "label": "Azure region",
+            "description": "If empty, attempts to ascertain endpoint from the environment.",
+            "type": "STRING",
+            "defaultValue": "eastus",
+            "mandatory": false
+        },
+        {
+            "name": "separator_api_quota",
+            "label": "API quota",
+            "type": "SEPARATOR",
+            "description": "Throttling to stay within the quota defined by Azure: https://docs.microsoft.com/en-us/azure/cognitive-services/text-analytics/concepts/data-limits"
+        },
+        {
+            "name": "api_quota_period",
+            "label": "Period",
+            "description": "Reset period of the quota in seconds. Defined by Azure.",
+            "type": "INT",
+            "mandatory": true,
+            "defaultValue": 60,
+            "minI": 1
+        },
+        {
+            "name": "api_quota_rate_limit",
+            "label": "Rate limit",
+            "description": "Maximum number of requests per period for one DSS activity. Reduce for concurrent activities.",
+            "type": "INT",
+            "mandatory": true,
+            "defaultValue": 300,
+            "minI": 1,
+            "maxI": 1000
+        },
+        {
+            "name": "separator_performance",
+            "label": "Parallelization",
+            "type": "SEPARATOR"
+        },
+        {
+            "name": "batch_size",
+            "label": "Batch size",
+            "description": "Number of rows to send to the API in batch (max 100). Increase to speed-up computation within the quota defined above.",
+            "type": "INT",
+            "mandatory": true,
+            "defaultValue": 5,
+            "minI": 1,
+            "maxI": 100
+        },
+        {
+            "name": "parallel_workers",
+            "label": "Concurrency",
+            "description": "Number of threads calling the API in parallel (max 100). Increase to speed-up computation within the quota defined above.",
+            "type": "INT",
+            "mandatory": true,
+            "defaultValue": 4,
+            "minI": 1,
+            "maxI": 100
+        }
+    ]
+}

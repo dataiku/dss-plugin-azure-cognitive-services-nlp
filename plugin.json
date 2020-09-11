@@ -1,14 +1,19 @@
 {
     "id": "azure-cognitive-services-nlp",
-    "version": "2.0.0",
+    "version": "1.0.0",
     "meta": {
-        "label": "Azure Cognitive Services - NLP",
-        "description": "Use Microsoft Azure to process texts (sentiment analysis, named entities recognition, language detection, key phrases extraction). No training required.",
-        "author": "Dataiku",
-        "icon": "icon-cloud",
+        "label": "Azure Cognitive Services - Text Analytics",
+        "category": "Natural Language Processing",
+        "description": "Use Microsoft Azure Cognitive Services Text Analytics APIs to perform Language Detection, Sentiment Analysis, Named Entity Recognition, Key Phrase and Personally Identifiable Information Extraction",
+        "author": "Dataiku (Alex COMBESSIE and Joachim ZENTICI)",
+        "icon": "icon-azure-cognitive-services icon-cloud",
         "licenseInfo": "Apache Software License",
         "url": "https://www.dataiku.com/dss/plugins/info/azure-cognitive-services-nlp.html",
-        "tags": ["Microsoft Azure", "Cloud", "NLP"],
-        "supportLevel": "NOT_SUPPORTED"
+        "tags": [
+            "Microsoft Azure",
+            "Cloud",
+            "NLP"
+        ],
+        "supportLevel": "TIER2_SUPPORT"
     }
 }
