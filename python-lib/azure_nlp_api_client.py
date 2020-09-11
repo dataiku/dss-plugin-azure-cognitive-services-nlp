@@ -74,10 +74,12 @@ def batch_api_response_parser(batch: List[Dict], response: Union[Dict, List], ap
             # result must be json serializable
             batch[i][api_column_names.response] = json.dumps(result[0])
         if len(error) != 0:
-            logging.warning(str(error[0]))
-            # custom for Azure edge case which is highly nested
-            inner_error = error[0].get("error", {}).get("innererror", error[0].get("error", {}))
-            batch[i][api_column_names.error_message] = inner_error.get("message", "")
-            batch[i][api_column_names.error_type] = inner_error.get("code", "")
-            batch[i][api_column_names.error_raw] = str(error[0])
+            raw_error = error[0]
+            logging.warning(str(raw_error))
+            error_dict = raw_error.get("error", {})
+            if "innererror" in error_dict:
+                error_dict = error_dict.get("innererror", {})
+            batch[i][api_column_names.error_message] = error_dict.get("message", "")
+            batch[i][api_column_names.error_type] = error_dict.get("code", "")
+            batch[i][api_column_names.error_raw] = str(raw_error)
     return batch
