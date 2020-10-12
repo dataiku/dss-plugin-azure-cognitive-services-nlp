@@ -1,4 +1,6 @@
 # -*- coding: utf-8 -*-
+"""Module with utility functions to call the Azure Cognitive Services Text Analytics API"""
+
 import logging
 import os
 import requests
