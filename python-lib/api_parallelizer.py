@@ -1,4 +1,6 @@
 # -*- coding: utf-8 -*-
+"""Module with functions to parallelize API calls with error handling"""
+
 import logging
 import inspect
 import math
@@ -167,7 +169,7 @@ def api_parallelizer(
     """
     df_iterator = (i[1].to_dict() for i in input_df.iterrows())
     len_iterator = len(input_df.index)
-    log_msg = "Calling remote API endpoint with {} rows".format(len_iterator)
+    log_msg = "Calling remote API endpoint with {} rows...".format(len_iterator)
     if api_support_batch:
         log_msg += ", chunked by {}".format(batch_size)
         df_iterator = chunked(df_iterator, batch_size)

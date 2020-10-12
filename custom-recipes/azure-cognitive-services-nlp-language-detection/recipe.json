@@ -70,7 +70,7 @@
             "name": "country_hint",
             "label": "Country hint",
             "type": "STRING",
-            "visibilityCondition": "model.expert == true",
+            "visibilityCondition": "model.expert",
             "defaultValue": "",
             "mandatory": false,
             "description": "Optional hint about the origin country of the dataset"
@@ -79,7 +79,7 @@
             "name": "error_handling",
             "label": "Error handling",
             "type": "SELECT",
-            "visibilityCondition": "model.expert == true",
+            "visibilityCondition": "model.expert",
             "selectChoices": [
                 {
                     "value": "FAIL",

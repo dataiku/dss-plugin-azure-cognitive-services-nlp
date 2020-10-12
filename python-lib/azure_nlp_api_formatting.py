@@ -1,4 +1,6 @@
 # -*- coding: utf-8 -*-
+"""Module with classes to format results from the Azure Cognitive Services Text Analytics API"""
+
 import logging
 from typing import AnyStr, Dict, List
 from enum import Enum

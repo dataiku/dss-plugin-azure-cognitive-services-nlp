@@ -63,10 +63,6 @@
                     "label": "Chinese (Traditional)"
                 },
                 {
-                    "value": "nl",
-                    "label": "Dutch"
-                },
-                {
                     "value": "en",
                     "label": "English"
                 },
@@ -91,12 +87,20 @@
                     "label": "Korean"
                 },
                 {
+                    "value": "no",
+                    "label": "Norwegian Bokmål"
+                },
+                {
                     "value": "pt",
                     "label": "Portuguese"
                 },
                 {
                     "value": "es",
                     "label": "Spanish"
+                },
+                {
+                    "value": "tr",
+                    "label": "Turkish"
                 }
             ],
             "defaultValue": "en"
@@ -140,7 +144,7 @@
             "name": "error_handling",
             "label": "Error handling",
             "type": "SELECT",
-            "visibilityCondition": "model.expert == true",
+            "visibilityCondition": "model.expert",
             "selectChoices": [
                 {
                     "value": "FAIL",

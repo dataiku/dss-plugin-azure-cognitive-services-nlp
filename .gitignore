@@ -52,6 +52,7 @@ htmlcov/
 unit.xml
 nosetests.xml
 coverage.xml
+unit.xml
 *.cover
 *.py,cover
 .hypothesis/
