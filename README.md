@@ -4,7 +4,7 @@
 
 This Dataiku DSS plugin provides recipes to call the [Azure Cognitive Services Text Analytics API](https://azure.microsoft.com/en-us/services/cognitive-services/text-analytics/).
 
-Documentation: https://www.dataiku.com/product/plugins/azure-cognitive-services-nlp/
+Documentation: https://www.dataiku.com/dss/plugins/info/azure-cognitive-services-nlp.html
 
 ## License
 
